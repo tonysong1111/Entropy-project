@@ -18,7 +18,7 @@ def draw_n(width, n=500):
     :param n: unsigned integer, number of objects (default 500 if not specified)
     :return: np array of phases
     """
-#    np.random.seed(2)
+    np.random.seed(2)
     left = np.random.uniform(0, 2*np.pi, 1)
     arr = np.array(np.random.uniform(left, left+width, n))
     return np.mod(arr, 2*np.pi)
