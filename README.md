@@ -15,4 +15,4 @@ Basic utilities:
       a. Three points in the form x-coord (space) y-coord, press "enter" after each point, insert extra line after all three points specified
       b. Number of objects in the ensemble
       c. Number of iterations to evolve the dynamical system
-      d. Numer of time-sequences to average over
+      d. Numer of time-sequences to average over.
