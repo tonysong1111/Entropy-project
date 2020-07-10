@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # num_obj, num_iter, num_seq, width = prompt_config()
     p_list = [(3.141, 2.356), (4.712, 1.385)]
     coeffs = pm.generate_cubic(p_list)
-    num_obj, num_iter, num_seq, width = (300, 150, 50, 2*np.pi)
+    num_obj, num_iter, num_seq, width = (300, 150, 50, 0.0001)
 
     ### define cubic function ###
     #cubic = pm.Cubic(cubicmap)
@@ -72,10 +72,11 @@ if __name__ == "__main__":
         cubic.set_coefficients(coeffss[i][0], coeffss[i][1], coeffss[i][2])
 
     # plot phase maps and their local lyapunov distributions as inset
-    pm.plot_phasemaps(cubic_set, colors)
+    #pm.plot_phasemaps(cubic_set, colors)
 
-    for i in range(4):
-        pm.plotresults(cubic_set[i].set_cubic, random, num_iter, num_seq)
+    # plot results for cubic_set
+    #for i in range(4):
+    #    pm.plotresults(cubic_set[i].set_cubic, random, num_iter, num_seq)
 
     #hist_vals = [0]*100
 
@@ -85,3 +86,9 @@ if __name__ == "__main__":
     #pm.plt.hist(hist_vals)
     #pm.plt.show()
 
+    # plot phases distributed over a circle
+    #pm.plot_circle(np.random.uniform(0, 1, 300))
+
+    # plot animation
+    pm.animate(cubic_set[0].set_cubic, random, num_iter)
+    plt.show()

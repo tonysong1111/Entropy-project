@@ -5,6 +5,7 @@ Updated July 2, 2020
 """
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.animation as animation
 import numpy as np
 from sympy import *
 import seaborn as sns
@@ -49,7 +50,7 @@ def closest(i, j, k):
     d1 = j-i
     d2 = k-j
     if d1 == 0 or d2 == 0:
-        return 1e-100
+        return 1e-30
     elif d1 >= d2:
         return d2
     else:
@@ -68,9 +69,9 @@ def entropy(phases):
     res = 0
     for i in range(len_sp):
         if i == 0:
-            res += np.log(sp[1] - sp[0] + 1e-100)
+            res += np.log(sp[1] - sp[0] + 1e-30)
         elif i == len_sp - 1:
-            res += np.log(sp[-1] - sp[-2] + 1e-100)
+            res += np.log(sp[-1] - sp[-2] + 1e-30)
         else:
             res += np.log(closest(sp[i-1], sp[i], sp[i+1]))
     return res / len_sp + np.log(2*len_sp - 2) + np.euler_gamma
@@ -78,11 +79,14 @@ def entropy(phases):
 
 def evolve(f, phases, num_iter):
     entropy_list = np.zeros(num_iter+1)
+    phase_list = np.array([phases])
     for i in range(num_iter+1):
         entropy_list[i] = entropy(phases)
         phases = iterate(f, phases)
+        np.append(phase_list, [phases], axis=0)
     entropy_list = np.delete(entropy_list, 0)
-    return entropy_list
+    phase_list = np.delete(phase_list, 0)
+    return phase_list, entropy_list
 
 
 def change(arr, before, after):
@@ -117,6 +121,31 @@ def plot_hist(q, ax, hist=True, kde=False, color=None, label=None):
                  color=color, label=label)
 
 
+def plot_circle(phases, ax):
+    xs = np.cos(phases)
+    ys = np.sin(phases)
+
+    xss = np.linspace(0, 2*np.pi, num=10000)
+    ax.scatter(xs, ys, c='r', marker='o', alpha = 0.3, zorder=10)
+    ax.plot(np.cos(xss), np.sin(xss), color='black', lw=1, zorder=0)
+    ax.set_aspect('equal', 'box')
+    plt.show()
+    return xs, ys
+
+
+def phase_evolution(f, phases, num_iter):
+    phase_list, _ = evolve(f, phases, num_iter)
+    return phase_list
+
+
+# animation
+def animate(f, phases, num_iter):
+    fig, ax = plt.subplots()
+    phase_list = phase_evolution(f, phases, num_iter)
+    return animation.FuncAnimation(fig, plot_circle, frames=phase_list,
+                                   fargs=(ax,))
+
+
 def plotresults(f, phases, num_iter, n_seq):
     """
     plots evolution of entropy for an ensemble of objects
@@ -131,7 +160,7 @@ def plotresults(f, phases, num_iter, n_seq):
     xs = np.linspace(1, num_iter, num=num_iter)
     ys = []
     for i in range(n_seq):
-        res = evolve(f, phases, num_iter)
+        phase_list, res = evolve(f, phases, num_iter)
         ys.append(res)
     ys = np.array(ys).reshape((n_seq, num_iter))
     ys_t = ys.T
