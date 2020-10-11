@@ -2,7 +2,7 @@
 -----------------------
 Tony Song
 
-Updated July 2, 2020
+Updated July 2, 2020   --> The .py scripts here are very outdated, please do not pull. Will update soon
 -----------------------
 Basic utilities:
 
